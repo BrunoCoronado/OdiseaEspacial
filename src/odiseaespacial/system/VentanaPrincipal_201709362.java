@@ -5,12 +5,13 @@
  */
 package odiseaespacial.system;
 
+import odiseaespacial.bean.Configuracion_201709362;
+
 /**
  *
  * @author bruno
  */
 public class VentanaPrincipal_201709362 extends javax.swing.JFrame {
-
     /**
      * Creates new form VentanaPrincipal
      */
@@ -48,6 +49,11 @@ public class VentanaPrincipal_201709362 extends javax.swing.JFrame {
 
         btnConfiguracion.setFont(new java.awt.Font("Consolas", 1, 18)); // NOI18N
         btnConfiguracion.setText("Configuración");
+        btnConfiguracion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfiguracionActionPerformed(evt);
+            }
+        });
 
         btnPuntuacionMaxima.setFont(new java.awt.Font("Consolas", 1, 18)); // NOI18N
         btnPuntuacionMaxima.setText("Puntuación Máxima");
@@ -71,8 +77,8 @@ public class VentanaPrincipal_201709362 extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnConfiguracion, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
-                    .addComponent(btnNuevoJuego, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+                    .addComponent(btnConfiguracion, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnNuevoJuego, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnPuntuacionMaxima, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -106,6 +112,13 @@ public class VentanaPrincipal_201709362 extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
 
+    private void btnConfiguracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfiguracionActionPerformed
+        VentanaConfiguracion_201709362 configuracion = new VentanaConfiguracion_201709362(this);
+        this.setVisible(false);
+        configuracion.setVisible(true);
+    }//GEN-LAST:event_btnConfiguracionActionPerformed
+    
+    
     /**
      * @param args the command line arguments
      */

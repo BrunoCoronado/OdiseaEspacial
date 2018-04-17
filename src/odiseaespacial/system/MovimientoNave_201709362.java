@@ -4,28 +4,54 @@
  * and open the template in the editor.
  */
 package odiseaespacial.system;
-
-
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import javax.swing.Timer;
 /**
  *
  * @author bruno
  */
-public abstract class MovimientoNave_201709362 extends Thread implements KeyListener{
-
+public class MovimientoNave_201709362 extends Thread{
+    //constantes de movimiento
+    private final int MOVIMIENTO_ARRIBA = 0;
+    private final int MOVIMIENTO_ABAJO = 1;
+    
+    private Timer timer;
     @Override
     public void run() {
-        super.run(); //To change body of generated methods, choose Tools | Templates.
+        timer = new Timer(Aplicacion_201709362.VELOCIDAD_NAVE, (ae) -> {
+            if (!Aplicacion_201709362.congelacion) {
+                switch(Aplicacion_201709362.movimientoNave){
+                    // 0 arriba - 1 abajo
+                    case MOVIMIENTO_ARRIBA:
+                        Aplicacion_201709362.posicionYNave = Aplicacion_201709362.posicionYNave-2;
+                        if(Aplicacion_201709362.posicionYNave<0){
+                            Aplicacion_201709362.posicionYNave=0;
+                        }
+                        break;
+                    case MOVIMIENTO_ABAJO:
+                        Aplicacion_201709362.posicionYNave = Aplicacion_201709362.posicionYNave+2;
+                        if(Aplicacion_201709362.posicionYNave>(Aplicacion_201709362.ALTO_PANEL_ESPACIO-Aplicacion_201709362.ALTO_NAVE)){
+                            Aplicacion_201709362.posicionYNave=Aplicacion_201709362.ALTO_PANEL_ESPACIO-Aplicacion_201709362.ALTO_NAVE;
+                        }
+                        break;
+                }
+                Aplicacion_201709362.lblNave.setBounds(0, Aplicacion_201709362.posicionYNave, Aplicacion_201709362.ANCHO_NAVE, Aplicacion_201709362.ALTO_NAVE);
+                Aplicacion_201709362.panelJuego.repaint();
+            }
+        });
+        timer.setInitialDelay(Aplicacion_201709362.VELOCIDAD_NAVE);
+        timer.start();
     }
-
-    @Override
-    public void keyPressed(KeyEvent ke) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    public void cambioEnLaVelocidadDeEnemigos(int multiplicador){
+        timer.setDelay(Aplicacion_201709362.VELOCIDAD_NAVE/(multiplicador/10));
+        timer.restart();
     }
-
-    @Override
-    public void keyReleased(KeyEvent ke){
-        
+    
+    public void pausarTimerMovimientoNave(){
+        timer.stop();
+    }
+    
+    public void reanudarTimerMovimientoNave(){
+        timer.restart();
     }
 }

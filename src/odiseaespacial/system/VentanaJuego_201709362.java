@@ -6,50 +6,124 @@
 package odiseaespacial.system;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JLabel;
-import javax.swing.Timer;
+import javax.swing.JPanel;
+import odiseaespacial.bean.Enemigo_201709362;
 
 /**
  *
  * @author bruno
  */
 public class VentanaJuego_201709362 extends javax.swing.JFrame{
-    private MovimientoNave_201709362 movimientoNave = new MovimientoNave_201709362();
-    private int alto = 480;
-    private int ancho = 1100;
+    //dimensiones ventana
+    private final int ALTO_VENTANA = 480;
+    private final int ANCHO_VENTANA = 1100;
+    //bounds panel
+    private final int POSICION_X_PANEL = 10;
+    private final int POSICION_Y_PANEL = 100;
+    //hilos
+    
+    private DisparoNave_201709362 hiloDisparoNave = new DisparoNave_201709362();
+    private AccionesItem_201709362 hiloAccionesItem = new AccionesItem_201709362();
+    private Cronometro_201709362 hiloCronometro = new Cronometro_201709362();
+    
+    private boolean disparoLanzado=true;
     /**
      * Creates new form VentanaJuego_201709362
      */
     public VentanaJuego_201709362() {
         initComponents();
-        
-        setSize(ancho, alto);
-        setResizable(false);
-        getContentPane().setLayout(null);
-        
-        lblEspacio = new JLabel();
-        getContentPane().add(lblEspacio);
-        lblEspacio.setBounds(10,90,1070,340);
-        lblEspacio.setBackground(Color.yellow);
-        lblEspacio.setOpaque(true);
-        
-        
-        
-        Aplicacion_201709362.lblNave = new JLabel("hola");
-        Aplicacion_201709362.lblNave.setBackground(Color.BLACK);
-        Aplicacion_201709362.lblNave.setOpaque(true);
-        Aplicacion_201709362.lblNave.setBounds(0,535,55,85);
-        lblEspacio.add(Aplicacion_201709362.lblNave);
-        
-        //uso otro distinto al generado, para aqregar variables estaticas
-        //iniciarComponentes();
-        /*this.addKeyListener((KeyListener)movimientoNave);
-        Movimie*/
+        initPropiedadesVentanta();
+        initPanelDeJuego();
+        initIndicadores();
+        initEnemigos();
+        initHilos();
     }
     
+    private void initIndicadores() {
+        lblPuntos.setText("0");
+        lblVelocidad.setText("x1");
+        Aplicacion_201709362.segundos = Aplicacion_201709362.configuracion.getDuracionPartida();
+        lblTiempo.setText(Aplicacion_201709362.segundos+" s");
+    }
+    
+    private void initPropiedadesVentanta() {
+        setSize(ANCHO_VENTANA, ALTO_VENTANA);
+        setResizable(false);
+        addKeyListener(new ManejoDeTeclas_201709362());
+    }
+
+    private void initPanelDeJuego() {
+        Aplicacion_201709362.panelJuego = new JPanel();
+        Aplicacion_201709362.panelJuego.setBackground(Color.yellow);
+        Aplicacion_201709362.panelJuego.setOpaque(true);
+        Aplicacion_201709362.panelJuego.setLayout(null);
+        add(Aplicacion_201709362.panelJuego);
+        Aplicacion_201709362.panelJuego.setBounds(POSICION_X_PANEL, POSICION_Y_PANEL, Aplicacion_201709362.ANCHO_PANEL_ESPACIO, Aplicacion_201709362.ALTO_PANEL_ESPACIO);
+        
+        Aplicacion_201709362.lblNave = new JLabel();
+        Aplicacion_201709362.lblNave.setBackground(Color.BLACK);
+        Aplicacion_201709362.lblNave.setOpaque(true);
+        Aplicacion_201709362.panelJuego.add(Aplicacion_201709362.lblNave);
+        Aplicacion_201709362.lblNave.setBounds(0,Aplicacion_201709362.posicionYNave,Aplicacion_201709362.ANCHO_NAVE,Aplicacion_201709362.ANCHO_NAVE);
+    }
+    
+    private void initHilos(){
+        //iniciamos los hilos, para las acciones de del juego
+        hiloDisparoNave.start();
+        if (Aplicacion_201709362.configuracion.getContadorItems()!=0) {
+            hiloAccionesItem.start();
+        }
+        hiloCronometro.start();
+        Aplicacion_201709362.hiloMovimientoNave.start();
+        Aplicacion_201709362.hiloMovimientoEnemigos.start();
+    }
+    
+    public void initEnemigos(){
+        for (int columna = 0; columna < 5; columna++) {
+            for (int fila = 0; fila < 8; fila++) {
+                JLabel lblEnemigo = new JLabel();
+                int coordenadaX = 865+(40*columna);
+                int coordenadaY = 25+(40*fila);
+                int salud = 0;
+                int tipo = 0;
+                switch(columna){
+                    case 0:
+                        lblEnemigo.setBackground(Color.BLUE);
+                        salud = 2;
+                        tipo = 1;
+                        break;
+                    case 1:
+                        lblEnemigo.setBackground(Color.RED);
+                        salud = 3;
+                        tipo = 2;
+                        break;
+                    case 2:
+                        lblEnemigo.setBackground(Color.RED);
+                        salud = 3;
+                        tipo = 2;
+                        break;
+                    case 3:
+                        lblEnemigo.setBackground(Color.GREEN);
+                        salud = 4;
+                        tipo = 3;
+                        break;
+                    case 4:
+                        lblEnemigo.setBackground(Color.GREEN);
+                        salud = 4;
+                        tipo = 3;
+                        break;
+                }
+                lblEnemigo.setOpaque(true);
+                lblEnemigo.setBounds(coordenadaX, coordenadaY, 35, 35);
+                Enemigo_201709362 enemigo = new Enemigo_201709362(lblEnemigo,tipo, coordenadaX, coordenadaY,salud);
+                Aplicacion_201709362.enemigos.add(enemigo);
+                Aplicacion_201709362.panelJuego.add(lblEnemigo);
+            }
+        }
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -64,16 +138,19 @@ public class VentanaJuego_201709362 extends javax.swing.JFrame{
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        lblPuntos = new javax.swing.JLabel();
+        lblVelocidad = new javax.swing.JLabel();
+        lblTiempo = new javax.swing.JLabel();
 
         jLabel25.setText("jLabel25");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("jLabel1");
+        jLabel1.setText("PUNTOS");
 
-        jLabel2.setText("jLabel2");
+        jLabel2.setText("VELOCIDAD");
 
-        jLabel3.setText("jLabel3");
+        jLabel3.setText("TIEMPO");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -81,12 +158,20 @@ public class VentanaJuego_201709362 extends javax.swing.JFrame{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(396, 396, 396)
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblPuntos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(71, 71, 71)
-                .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(lblVelocidad)))
                 .addGap(72, 72, 72)
-                .addComponent(jLabel3)
-                .addContainerGap(440, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTiempo)
+                    .addComponent(jLabel3))
+                .addContainerGap(407, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -96,64 +181,22 @@ public class VentanaJuego_201709362 extends javax.swing.JFrame{
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
-                .addContainerGap(447, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPuntos)
+                    .addComponent(lblVelocidad)
+                    .addComponent(lblTiempo))
+                .addContainerGap(468, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     
-    
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(VentanaJuego_201709362.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(VentanaJuego_201709362.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(VentanaJuego_201709362.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(VentanaJuego_201709362.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new VentanaJuego_201709362().setVisible(true);
-//            }
-//        });
-//    }
-    
-    private class ManejoDeTeclas implements KeyListener{
+    public class ManejoDeTeclas_201709362 implements KeyListener{
         //movimiento nave----0 arriba-1 abajo
         @Override
         public void keyPressed(KeyEvent ke) {
-            switch(ke.getKeyCode()){
-                case KeyEvent.VK_UP:
-                    System.out.println("arriba");
-                    Aplicacion_201709362.movimientoNave = 0;
-                    movimientoNave.start();
-                    break;
-                case KeyEvent.VK_DOWN:
-                    Aplicacion_201709362.movimientoNave = 1;
-                    System.out.println("abajo");
-                    break;
-            }
+            ejecutarAccionTeclado(0, ke.getKeyCode());
         }
 
         @Override
@@ -161,48 +204,69 @@ public class VentanaJuego_201709362 extends javax.swing.JFrame{
 
         @Override
         public void keyReleased(KeyEvent ke) {
-            //terminar hilo
-            movimientoNave.interrupt();
-            Aplicacion_201709362.movimientoNave = 2;
+            ejecutarAccionTeclado(1, ke.getKeyCode());
+        }
+    }
+    //0 presionado - 1 soltado 
+    private void ejecutarAccionTeclado(int estado, int tecla){
+        switch(tecla){
+            case KeyEvent.VK_UP:
+                if (estado == 0) {
+                    Aplicacion_201709362.movimientoNave = 0;
+                }else{
+                    Aplicacion_201709362.movimientoNave = 2;
+                }
+                break;
+            case KeyEvent.VK_DOWN:
+                if (estado == 0) {
+                    Aplicacion_201709362.movimientoNave = 1;
+                }else{
+                    Aplicacion_201709362.movimientoNave = 2;
+                }
+                break;
+            case KeyEvent.VK_SPACE:
+                if (estado == 0) {
+                    if (disparoLanzado) {
+                        hiloDisparoNave.condicionesDeDisparo(true,Aplicacion_201709362.ANCHO_NAVE, (Aplicacion_201709362.posicionYNave+40));
+                        disparoLanzado=false;
+                    }
+                }else{
+                    disparoLanzado=true;
+                }
+                break;
+            case KeyEvent.VK_ESCAPE:
+                if (estado != 1) {
+                    if (!Aplicacion_201709362.juegoPausado) {
+                        System.out.println("juego pausado");
+                        Aplicacion_201709362.juegoPausado=true;
+                        //parar timers o hilos
+                        hiloDisparoNave.pausarTimerDisparos();
+                        hiloAccionesItem.pausarTimerAccionesItem();
+                        hiloCronometro.pausarTimerCronometro();
+                        Aplicacion_201709362.hiloMovimientoNave.pausarTimerMovimientoNave();
+                        Aplicacion_201709362.hiloMovimientoEnemigos.pausarTimerMovimientoEnemigos();
+                    }else{
+                        System.out.println("juego reanudado");
+                        Aplicacion_201709362.juegoPausado=false;
+                        //continuar hilos
+                        hiloDisparoNave.reanudarTimerDisparos();
+                        hiloAccionesItem.reanudarTimerAccionesItem();
+                        hiloCronometro.reanudarTimerCronometro();
+                        Aplicacion_201709362.hiloMovimientoNave.reanudarTimerMovimientoNave();
+                        Aplicacion_201709362.hiloMovimientoEnemigos.reanudarTimerMovimientoEnemigos();
+                    }
+                }
+                break;
         }
     }
     
-    private class MovimientoNave_201709362 extends Thread{
-    
-    @Override
-    public void run() {
-        Timer timer = new Timer(5, (ae) -> {
-            int y = Aplicacion_201709362.lblNave.getY();
-            int x;
-            Rectangle bounds;
-            switch(Aplicacion_201709362.movimientoNave){
-                // 0 arriba - 1 abajo
-                case 0:
-                    y = y+2;
-                    bounds = Aplicacion_201709362.lblNave.getBounds();
-                    x = (int)bounds.getX();
-                    bounds.translate(x, y);
-                    Aplicacion_201709362.lblNave.setBounds(bounds);
-                    break;
-                case 1:
-                    y = y-2;
-                    bounds = Aplicacion_201709362.lblNave.getBounds();
-                    x = (int)bounds.getX();
-                    bounds.translate(x, y);
-                    Aplicacion_201709362.lblNave.setBounds(bounds);
-                    break;
-            }
-            Aplicacion_201709362.panelJuego.repaint();
-        });
-        timer.start();
-    }
-}
-    private javax.swing.JLabel lblEspacio;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
+    public static javax.swing.JLabel lblPuntos;
+    public static javax.swing.JLabel lblTiempo;
+    public static javax.swing.JLabel lblVelocidad;
     // End of variables declaration//GEN-END:variables
-
 }

@@ -31,8 +31,8 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnConfiguracion" pref="311" max="32767" attributes="0"/>
-                  <Component id="btnNuevoJuego" pref="311" max="32767" attributes="0"/>
+                  <Component id="btnConfiguracion" min="-2" pref="311" max="-2" attributes="0"/>
+                  <Component id="btnNuevoJuego" max="32767" attributes="0"/>
                   <Component id="btnPuntuacionMaxima" alignment="0" max="32767" attributes="0"/>
                   <Component id="btnSalir" alignment="0" max="32767" attributes="0"/>
               </Group>
@@ -85,6 +85,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Configuraci&#xf3;n"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConfiguracionActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnPuntuacionMaxima">
       <Properties>
