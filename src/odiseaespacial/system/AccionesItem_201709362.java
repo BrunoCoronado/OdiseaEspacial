@@ -24,8 +24,8 @@ public class AccionesItem_201709362 extends Thread{
     private Timer timerMoverItems;
     
     //tamaño item
-    private final int ALTO_ITEM=25;
-    private final int ANCHO_ITEM=25;
+    private final int ALTO_ITEM=50;
+    private final int ANCHO_ITEM=50;
     
     private Random numeroAleatorio = new Random();
     
@@ -43,7 +43,7 @@ public class AccionesItem_201709362 extends Thread{
                 //generar item
                 int tipo = validarGenerarItem( 1+numeroAleatorio.nextInt(6));
                 int posicionX = (200+numeroAleatorio.nextInt(Aplicacion_201709362.ANCHO_PANEL_ESPACIO-500));
-                int posicionY = (10+numeroAleatorio.nextInt(Aplicacion_201709362.ALTO_PANEL_ESPACIO-10));
+                int posicionY = (10+numeroAleatorio.nextInt(Aplicacion_201709362.ALTO_PANEL_ESPACIO-55));
                 JLabel lblItem = new JLabel(""+tipo);
                 lblItem.setBackground(Color.ORANGE);
                 lblItem.setOpaque(true);

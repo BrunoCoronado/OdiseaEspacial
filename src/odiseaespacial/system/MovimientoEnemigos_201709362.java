@@ -12,8 +12,8 @@ import javax.swing.Timer;
  * @author bruno
  */
 public class MovimientoEnemigos_201709362 extends Thread{
-    private final int ALTO_ENEMIGO = 35;
-    private final int ANCHO_ENEMIGO = 35;
+    private final int ALTO_ENEMIGO = 83;
+    private final int ANCHO_ENEMIGO = 83;
     
     private int corrienteDeMovimientoY = 0;
     //0 hacia arriba - 1 hacia abajo
@@ -41,6 +41,8 @@ public class MovimientoEnemigos_201709362 extends Thread{
                             Aplicacion_201709362.enemigos.get(i).setPosicionX(movimeintoEnX);
                             Aplicacion_201709362.enemigos.get(i).setPosicionY(movimientoEnY);
                             Aplicacion_201709362.enemigos.get(i).getLblEnemigo().setBounds(Aplicacion_201709362.enemigos.get(i).getPosicionX(), Aplicacion_201709362.enemigos.get(i).getPosicionY(), ANCHO_ENEMIGO, ALTO_ENEMIGO);
+                            verificarGolpeConNave(movimeintoEnX, movimientoEnY);
+                            verificarPosicionLimite(movimeintoEnX);
                         }
                         break;
                     case 1:
@@ -58,13 +60,14 @@ public class MovimientoEnemigos_201709362 extends Thread{
                             Aplicacion_201709362.enemigos.get(index).setPosicionX(x);
                             Aplicacion_201709362.enemigos.get(index).setPosicionY(y);
                             Aplicacion_201709362.enemigos.get(index).getLblEnemigo().setBounds(Aplicacion_201709362.enemigos.get(index).getPosicionX(), Aplicacion_201709362.enemigos.get(index).getPosicionY(), ANCHO_ENEMIGO, ALTO_ENEMIGO);
+                            verificarGolpeConNave(x, y);
+                            verificarPosicionLimite(x);
                         }
                         break;
                 }   
                 Aplicacion_201709362.panelJuego.repaint();
             } catch (Exception e) {
                 System.out.println("error al mover enemigos");
-                e.printStackTrace();
             }
         });
         timer.setInitialDelay(Aplicacion_201709362.configuracion.getNivelVelocidad());
@@ -82,5 +85,26 @@ public class MovimientoEnemigos_201709362 extends Thread{
     
     public void reanudarTimerMovimientoEnemigos(){
         timer.restart();
+    }
+    
+    private void verificarGolpeConNave(int posicionXEnemigo, int posicionYEnemigo){
+        if(posicionXEnemigo <= Aplicacion_201709362.ANCHO_NAVE){
+            int a = Aplicacion_201709362.posicionYNave;
+            int b = Aplicacion_201709362.posicionYNave + Aplicacion_201709362.ALTO_NAVE;
+            int c = posicionYEnemigo;
+            int d = posicionYEnemigo + ALTO_ENEMIGO;
+            if(c<=b){
+                if (d>=a) {
+                    Aplicacion_201709362.estadoJuego = 2;
+                }
+            }
+        }
+    }
+    
+    private void verificarPosicionLimite(int posicionXEnemigo){
+        if (posicionXEnemigo<=0) {
+            Aplicacion_201709362.estadoJuego = 2;
+            timer.stop();
+        }
     }
 }

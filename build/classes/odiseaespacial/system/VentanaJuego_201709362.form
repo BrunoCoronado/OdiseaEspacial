@@ -49,7 +49,7 @@
                   <Component id="lblTiempo" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="407" max="32767" attributes="0"/>
+              <EmptySpace pref="416" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -68,7 +68,7 @@
                   <Component id="lblVelocidad" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblTiempo" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="468" max="32767" attributes="0"/>
+              <EmptySpace pref="566" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

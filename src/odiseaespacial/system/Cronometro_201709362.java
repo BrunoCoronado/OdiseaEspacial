@@ -22,8 +22,8 @@ public class Cronometro_201709362 extends Thread{
                 lblTiempo.setText(Aplicacion_201709362.segundos+" s");
                 Aplicacion_201709362.segundos--;
             }else{
-                System.out.println("juego terminado");
-                
+                lblTiempo.setText(Aplicacion_201709362.segundos+" s");
+                Aplicacion_201709362.estadoJuego = 2;
             }
             //efecto del item congelar
             if (Aplicacion_201709362.tiempoCongelacion<=0) {
@@ -37,9 +37,14 @@ public class Cronometro_201709362 extends Thread{
                 Aplicacion_201709362.boostVelocidadNave=false;
                 Aplicacion_201709362.hiloMovimientoNave.cambioEnLaVelocidadDeEnemigos(10);
             }
+            //contador del tiempo del boost de velocidad
             if (Aplicacion_201709362.boostVelocidadNave) {
                 Aplicacion_201709362.tiempoBoostVelocidadNave--;
-            }  
+            }
+            //contador de enemigos en el juego
+            if (Aplicacion_201709362.contadorEnemigosTotal<=0) {
+                Aplicacion_201709362.estadoJuego=1;
+            }
         });
         tiempo.start();
     }

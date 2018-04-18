@@ -35,7 +35,7 @@ public class DisparoNave_201709362 extends Thread{
             if(disparoLanzado){
                 try {
                     JLabel lblDisparo = new JLabel();
-                    lblDisparo.setBackground(Color.BLACK);
+                    lblDisparo.setBackground(Color.WHITE);
                     lblDisparo.setOpaque(true);
                     lblDisparo.setBounds(bala.getPosicionX(), bala.getPosicionY(), ANCHO_BALA, ALTO_BALA);
                     bala.setLblDisparo(lblDisparo);
@@ -83,10 +83,10 @@ public class DisparoNave_201709362 extends Thread{
     private boolean verificarGolpe(int posicionX, int posicionY, int index) {
         for (int i = 0; i < Aplicacion_201709362.enemigos.size(); i++) {
             int a = Aplicacion_201709362.enemigos.get(i).getPosicionY();
-            int b = Aplicacion_201709362.enemigos.get(i).getPosicionY()+35;
+            int b = Aplicacion_201709362.enemigos.get(i).getPosicionY()+83;
             int c = posicionY;
             int d = posicionY+5;
-            if ((posicionX+ANCHO_BALA)==Aplicacion_201709362.enemigos.get(i).getPosicionX()) {
+            if ((posicionX+ANCHO_BALA)>=Aplicacion_201709362.enemigos.get(i).getPosicionX()) {
                 if (c<=b) {
                     if(d>=a){
                         try {
@@ -97,6 +97,7 @@ public class DisparoNave_201709362 extends Thread{
                             Aplicacion_201709362.enemigos.get(i).setSalud(Aplicacion_201709362.enemigos.get(i).getSalud()-1);
                             if (Aplicacion_201709362.enemigos.get(i).getSalud() <= 0) {
                                 //eliminar enemigo en posicion i
+                                Aplicacion_201709362.contadorEnemigosTotal--;
                                 revisarVelocidadEnemigos(Aplicacion_201709362.enemigos.get(i).getTipo());
                                 añadirPuntos(Aplicacion_201709362.enemigos.get(i).getTipo());
                                 Aplicacion_201709362.panelJuego.remove(Aplicacion_201709362.enemigos.get(i).getLblEnemigo());
